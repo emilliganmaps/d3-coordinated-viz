@@ -1,13 +1,57 @@
+.map {
+    border: medium solid #999;
+    margin: 10px 0 0 20px;
+}
+
 .countries {
-    fill: #DFDDE0;
+    fill: #555555;
     stroke: #CCC;
-    stroke-width: 2px;
+    stroke-width: 0.5px;
+}
+
+.states {
+    stroke: #000;
+    stroke-width: 0.5px;
+    stroke-linecap: round;
 }
 
 .gratBackground {
-    fill: #DCEBF8;
+    fill: #C8C8C8;
 }
 
-.map {
-    border: medium solid #999;
+.chart {
+    float: right;
+    margin: 7px 20px 0 0;
+}
+
+.chartTitle {
+    font-family: sans-serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+}
+
+.chartBackground {
+    fill: #A5A5A5;
+}
+
+.chartFrame {
+    fill: none;
+    stroke: #999;
+    stroke-width: 3px;
+    shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #999;
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 0.8em;
+    fill: #999;
 }
