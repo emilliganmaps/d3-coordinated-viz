@@ -1,4 +1,4 @@
-id,region,adm1_code,year,healthcare providers,residents per healthcare provider,primary care providers,residents per PC provider,physicians,primary care physicians,nurse practitioners,primary care NPs,physician assistants,primary care PAs,population
+id,name,adm1_code,year,healthcare providers,residents per healthcare provider,primary care providers,residents per PC provider,physicians,primary care physicians,nurse practitioners,primary care NPs,physician assistants,primary care PAs,population
 1,Alabama,USA-3541,2013,9488,509,4061,1190.278749,7925,3140,1239,806,324,115,4833722
 2,Arizona,USA-3520,2013,14446,459,5931,1117.286124,11265,4180,1782,1065,1401,686,6626624
 3,Arkansas,USA-3528,2013,5469,541,2523,1172.957987,4474,1868,842,581,153,74,2959373

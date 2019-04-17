@@ -6,13 +6,14 @@
 
     //chart frame dimensions
     var chartWidth = window.innerWidth * 0.425,
-        chartHeight = 600,
+        chartHeight = 606,
         leftPadding = 25,
         rightPadding = 2,
-        topBottomPadding = 5,
+        topBottomPadding = 3,
         chartInnerWidth = chartWidth - leftPadding - rightPadding,
         chartInnerHeight = chartHeight - topBottomPadding * 2,
         translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
+
 
     //create a scale to size bars proportionally to frame and for axis
     var yScale = d3.scaleLinear()
@@ -86,12 +87,36 @@
             //call dropdown
             createDropdown(csvData);
 
-            updateChart(bars, csvData.length, colorScale);
-
         };
     }; //set map function ends
 
+    //function to create color scale generator
+    function makeColorScale(data){
+        var colorClasses = [
+            "#fee5d9", //light red
+            "#fcae91",
+            "#fb6a4a",
+            "#de2d26",
+            "#a50f15" //dark red
+        ];
 
+        //create color scale generator
+        var colorScale = d3.scaleQuantile()
+            .range(colorClasses);
+
+        //build array of all values of the expressed attribute
+        var domainArray = [];
+        for (var i=0; i<data.length; i++){
+            var val = parseFloat(data[i][expressed]);
+            domainArray.push(val);
+        };
+
+        //assign array of expressed values as scale domain
+        colorScale.domain(domainArray);
+
+        return colorScale;
+    };
+    
     //function to create a graticule
     function setGraticule(map, path){
         //sets up a graticule
@@ -161,7 +186,6 @@
             .append("option")
             .attr("value", function(d){ return d })
             .text(function(d){ return d });
-
     }; 
 
     //dropdown change listener handler
@@ -217,34 +241,7 @@
             .text("Number of " + expressed);
     };
     
-    //function to create color scale generator
-    function makeColorScale(data){
-        var colorClasses = [
-            "#fee5d9", //light red
-            "#fcae91",
-            "#fb6a4a",
-            "#de2d26",
-            "#a50f15" //dark red
-        ];
-
-        //create color scale generator
-        var colorScale = d3.scaleQuantile()
-            .range(colorClasses);
-
-        //build array of all values of the expressed attribute
-        var domainArray = [];
-        for (var i=0; i<data.length; i++){
-            var val = parseFloat(data[i][expressed]);
-            domainArray.push(val);
-        };
-
-        //assign array of expressed values as scale domain
-        colorScale.domain(domainArray);
-
-        return colorScale;
-    };
-    
-    //function to test for data value and return color
+    //function to test for data value and return color for choropleth map
     function choropleth(props, colorScale){
         //make sure attribute value is a number
         var val = parseFloat(props[expressed]);
@@ -263,7 +260,7 @@
         var states = map.selectAll(".states")
             .data(ustates)
             .enter()
-            .append("path")
+            .append("path") //append to svg
             .attr("class", function(d){
                 return "states " + d.properties.adm1_code;
             })
@@ -285,16 +282,7 @@
 
     //function to create coordinated bar chart
     function setChart(csvData, colorScale){
-        //chart frame dimensions
-        var chartWidth = window.innerWidth * 0.425,
-            chartHeight = 606,
-            leftPadding = 25,
-            rightPadding = 2,
-            topBottomPadding = 3,
-            chartInnerWidth = chartWidth - leftPadding - rightPadding,
-            chartInnerHeight = chartHeight - topBottomPadding * 2,
-            translate = "translate(" + leftPadding + "," + topBottomPadding + ")";
-
+        
         //create a second svg for chart
         var chart = d3.select("body")
             .append("svg")
@@ -363,14 +351,21 @@
 
     //highlight an individual state or bar
     function highlight(props){
+        //change the stroke of the highlighted state or bar
         var selected = d3.selectAll("." + props.adm1_code)
-            .style("stroke", "black")
+            .style("fill-opacity", "0.8")
+            .style("stroke", "#4F4F4F")
             .style("stroke-width", "2");
+        
+        setLabel(props); //add label with mouseover
     };
 
     //reset element style on mouseout
     function dehighlight(props){
         var selected = d3.selectAll("." + props.adm1_code)
+            .style("fill-opacity", function(){
+                return getStyle(this, "fill-opacity")
+            })
             .style("stroke", function(){
                 return getStyle(this, "stroke")
             })
@@ -387,6 +382,8 @@
 
             return styleObject[styleName];
         };
+        
+        //remove info label
         d3.select(".infolabel")
             .remove();
     };
@@ -403,15 +400,16 @@
             .attr("class", "infolabel")
             .attr("id", props.adm1_code + "_label")
             .html(labelAttribute);
-
+        
+        //use the name of the state in the label
         var stateName = infolabel.append("div")
             .attr("class", "labelname")
-            .html(props.name);
+            .html(props.name); //updates the name of the state with mouseover
     };
 
     //function to move info label with mouse
     function moveLabel(){
-        //get width of label
+        //get label width
         var labelWidth = d3.select(".infolabel")
             .node()
             .getBoundingClientRect()
